@@ -1,0 +1,45 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+<h2>Đơn hàng của tôi</h2>
+
+{% if orders %}
+    {% for order in orders %}
+    <div class="card mb-3">
+        <div class="card-header">
+            <div class="d-flex justify-content-between">
+                <span>Đơn hàng #{{ order.id }}</span>
+                <span>{{ order.created_date.strftime('%d/%m/%Y %H:%M') }}</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Giá</th>
+                        <th>Tổng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ "{:,.0f}".format(item.price) }} VNĐ</td>
+                        <td>{{ "{:,.0f}".format(item.price * item.quantity) }} VNĐ</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="text-end">
+                <strong>Trạng thái:</strong> {{ order.status }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <p>Bạn chưa có đơn hàng nào</p>
+{% endif %}
+{% endblock %} 

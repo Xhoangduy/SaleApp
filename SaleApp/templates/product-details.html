@@ -3,5 +3,66 @@
 {%block title%}Chi tiết sản phẩm{%endblock%}
 
 {%block content%}
-{{prod}}
+<div class="row">
+    <div class="col-md-6">
+        <img src="{{ prod.image }}" class="img-fluid" alt="{{ prod.name }}">
+    </div>
+    <div class="col-md-6">
+        <h2>{{ prod.name }}</h2>
+        <p class="text-muted">{{ prod.category.name }}</p>
+        <p>{{ prod.description }}</p>
+        <h3 class="text-danger">{{ "{:,.0f}".format(prod.price) }} VNĐ</h3>
+        
+        {% if current_user.is_authenticated %}
+        <form method="post" action="{{ url_for('add_to_cart', product_id=prod.id) }}">
+            <div class="mb-3">
+                <label for="quantity" class="form-label">Số lượng:</label>
+                <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1">
+            </div>
+            <button type="submit" class="btn btn-primary">Thêm vào giỏ</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-5">
+    <h3>Đánh giá sản phẩm</h3>
+    
+    {% if current_user.is_authenticated %}
+    <form method="post" action="{{ url_for('add_comment', product_id=prod.id) }}" class="mb-4">
+        <div class="mb-3">
+            <label for="rating" class="form-label">Đánh giá:</label>
+            <select class="form-control" id="rating" name="rating" required>
+                <option value="5">5 sao</option>
+                <option value="4">4 sao</option>
+                <option value="3">3 sao</option>
+                <option value="2">2 sao</option>
+                <option value="1">1 sao</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">Nhận xét:</label>
+            <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+    </form>
+    {% endif %}
+
+    {% for comment in prod.comments %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <h6 class="card-subtitle mb-2 text-muted">{{ comment.user.username }}</h6>
+                <div>
+                    {% for i in range(comment.rating) %}
+                    ⭐
+                    {% endfor %}
+                </div>
+            </div>
+            <p class="card-text">{{ comment.content }}</p>
+            <small class="text-muted">{{ comment.created_date.strftime('%d/%m/%Y %H:%M') }}</small>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {%endblock%}

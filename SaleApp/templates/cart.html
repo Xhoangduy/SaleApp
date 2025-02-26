@@ -1,0 +1,40 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+<h2>Giỏ hàng</h2>
+
+{% if items %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Tổng</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ "{:,.0f}".format(item.product.price) }} VNĐ</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ "{:,.0f}".format(item.product.price * item.quantity) }} VNĐ</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="text-end"><strong>Tổng cộng:</strong></td>
+                <td><strong>{{ "{:,.0f}".format(total) }} VNĐ</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <form method="post" action="{{ url_for('checkout') }}" class="text-end">
+        <button type="submit" class="btn btn-primary">Thanh toán</button>
+    </form>
+{% else %}
+    <p>Giỏ hàng trống</p>
+{% endif %}
+{% endblock %} 
